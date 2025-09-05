@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  phone       String?
+  avatar      String?
+  verified    Boolean  @default(false)
+  role        Role     @default(USER)
+  cart        Cart[]
+  bookings    Booking[]
+  inquiries   Inquiry[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  slug         String        @unique
+  description  String?
+  image        String?
+  order        Int           @default(0)
+  products     Product[]
+  subcategories Subcategory[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("categories")
+}
+
+model Subcategory {
+  id         String    @id @default(cuid())
+  name       String
+  slug       String
+  description String?
+  image      String?
+  order      Int       @default(0)
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+  products   Product[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([categoryId, slug])
+  @@map("subcategories")
+}
+
+model Product {
+  id           String      @id @default(cuid())
+  name         String
+  description  String
+  price        Float
+  images       String      // JSON string for images array
+  colors       String      // JSON string for colors array
+  sizes        String      // JSON string for sizes array
+  category     Category    @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  subcategory  Subcategory? @relation(fields: [subcategoryId], references: [id])
+  subcategoryId String?
+  featured     Boolean     @default(false)
+  available    Boolean     @default(true)
+  stock        Int         @default(0)
+  sku          String?     @unique
+  tags         String      // JSON string for tags array
+  cart         Cart[]
+  inquiries    Inquiry[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("products")
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@map("cart")
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  name        String
+  email       String
+  phone       String
+  date        DateTime
+  time        String
+  message     String?
+  status      String   @default("pending") // pending, confirmed, cancelled
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("bookings")
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+  name      String
+  email     String
+  phone     String?
+  message   String
+  status    String   @default("new") // new, responded, closed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("inquiries")
+}
+
+model ContactForm {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    String   @default("new") // new, responded, closed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_forms")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  image     String?
+  featured  Boolean  @default(false)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("announcements")
+}
+
+model SiteSettings {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("site_settings")
+}

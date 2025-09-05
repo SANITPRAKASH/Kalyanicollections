@@ -1,36 +1,186 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pushkara Expressions - Boutique Store Application
+
+A modern Next.js 14 boutique e-commerce application for "Pushkara Expressions" - an online catalog for authentic Indian wear without transactions/delivery. Focus on product showcase, user authentication, and appointment booking.
+
+## Features
+
+### 🛍️ Product Management
+- Beautiful product catalog with categories and subcategories
+- Advanced filtering and search functionality
+- Product detail pages with image galleries
+- Featured products and collections
+
+### 🔐 Authentication System
+- JWT + Email OTP (2-factor authentication)
+- Secure user registration and login
+- Protected routes and middleware
+- User profile management
+
+### 📱 User Experience
+- Responsive design for all devices
+- Modern UI with boutique theme
+- Shopping cart (wishlist style)
+- Appointment booking system
+
+### 🎨 Design System
+- Custom Tailwind CSS theme with boutique colors
+- Glassmorphism and neumorphic design elements
+- Smooth animations and transitions
+- Accessible and user-friendly interface
+
+## Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Styling**: TailwindCSS v4 with custom theme
+- **Authentication**: JWT + Email OTP
+- **Database**: PostgreSQL with Prisma ORM
+- **UI Components**: Radix UI primitives
+- **State Management**: Zustand
+- **Email Service**: Nodemailer
+- **Image Handling**: Next.js Image optimization
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+ 
+- PostgreSQL database
+- Email service (Gmail/SMTP)
 
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd pkexpressions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Update the `.env` file with your database and email configuration:
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/pkexpressions"
+JWT_SECRET="your-super-secret-jwt-key"
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT=587
+EMAIL_USER="your-email@gmail.com"
+EMAIL_PASS="your-app-password"
+```
 
-## Learn More
+4. Set up the database:
+```bash
+npm run db:generate
+npm run db:push
+npm run db:seed
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Start the development server:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── (auth)/            # Authentication pages
+│   ├── (shop)/            # Product pages
+│   ├── (user)/            # User dashboard pages
+│   ├── admin/             # Admin panel
+│   ├── api/               # API routes
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── layout/           # Layout components
+│   ├── product/          # Product-related components
+│   └── ui/               # Reusable UI components
+├── lib/                  # Utility libraries
+│   ├── auth.ts           # Authentication utilities
+│   ├── db.ts             # Database client
+│   ├── email.ts          # Email service
+│   └── utils.ts          # General utilities
+├── stores/               # Zustand state management
+└── types/                # TypeScript type definitions
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Key Features Implementation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Authentication Flow
+1. User registers/logs in with email and password
+2. System generates and sends OTP to email
+3. User verifies OTP
+4. JWT token is issued and stored
+5. Protected routes are accessible
+
+### Product Catalog
+- Category-based navigation with dropdown menus
+- Advanced filtering by category, price, colors
+- Search functionality
+- Grid and list view modes
+- Product detail pages with image galleries
+
+### Shopping Cart
+- Add products to cart (wishlist style)
+- Persistent cart storage
+- Cart management in user dashboard
+- No checkout process (catalog only)
+
+### Appointment Booking
+- Contact form for general inquiries
+- Appointment booking system
+- Email notifications
+- Admin panel for managing bookings
+
+## Admin Panel
+
+The admin panel provides:
+- Product management (CRUD operations)
+- Category and subcategory management
+- User management
+- Booking and inquiry management
+- Analytics dashboard
+
+Access: `/admin` (requires admin role)
+
+## Deployment
+
+### Environment Setup
+1. Set up PostgreSQL database
+2. Configure email service
+3. Set environment variables
+4. Run database migrations
+
+### Build and Deploy
+```bash
+npm run build
+npm start
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support, email info@pushkaraexpressions.com or create an issue in the repository.
+
+---
+
+Built with ❤️ for Pushkara Expressions
