@@ -12,12 +12,12 @@ const transporter = nodemailer.createTransport({
 
 export async function sendOTPEmail(email: string, otp: string, name?: string) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || 'Pushkara Expressions <noreply@pushkaraexpressions.com>',
+    from: process.env.EMAIL_FROM || 'Kalyani Collections <noreply@kalyaniabharan.com>',
     to: email,
-    subject: 'Your OTP for Pushkara Expressions',
+    subject: 'Your OTP for Kalyani Collections', 
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #330847;">Welcome to Pushkara Expressions</h2>
+        <h2 style="color: #330847;">Welcome to Kalyani Collections</h2>
         <p>Hello ${name || 'there'},</p>
         <p>Your OTP for verification is:</p>
         <div style="background-color: #f8cf9c; padding: 20px; text-align: center; margin: 20px 0;">
@@ -27,7 +27,7 @@ export async function sendOTPEmail(email: string, otp: string, name?: string) {
         <p>If you didn't request this OTP, please ignore this email.</p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
         <p style="color: #666; font-size: 12px;">
-          Pushkara Expressions - Your trusted boutique for authentic Indian wear
+          Kalyani Collections - Your trusted boutique for authentic Indian wear
         </p>
       </div>
     `,
@@ -44,14 +44,14 @@ export async function sendOTPEmail(email: string, otp: string, name?: string) {
 
 export async function sendWelcomeEmail(email: string, name: string) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || 'Pushkara Expressions <noreply@pushkaraexpressions.com>',
+    from: process.env.EMAIL_FROM || 'Kalyani Collections <noreply@kalyaniabharan.com>',
     to: email,
-    subject: 'Welcome to Pushkara Expressions!',
+    subject: 'Welcome to Kalyani Collections!',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #330847;">Welcome to Pushkara Expressions!</h2>
+        <h2 style="color: #330847;">Welcome to Kalyani Collections!</h2>
         <p>Dear ${name},</p>
-        <p>Thank you for joining Pushkara Expressions! We're excited to have you as part of our community.</p>
+        <p>Thank you for joining Kalyani Collections! We're excited to have you as part of our community.</p>
         <p>Explore our beautiful collection of:</p>
         <ul>
           <li>Elegant Sarees</li>
@@ -63,7 +63,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
         <p>Happy shopping!</p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
         <p style="color: #666; font-size: 12px;">
-          Pushkara Expressions - Your trusted boutique for authentic Indian wear
+          Kalyani Collections - Your trusted boutique for authentic Indian wear
         </p>
       </div>
     `,
@@ -79,9 +79,9 @@ export async function sendWelcomeEmail(email: string, name: string) {
 
 export async function sendInquiryEmail(email: string, name: string, productName: string, message: string) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || 'Pushkara Expressions <noreply@pushkaraexpressions.com>',
+    from: process.env.EMAIL_FROM || 'Kalyani Collections <noreply@kalyaniabharan.com>',
     to: email,
-    subject: 'Thank you for your inquiry - Pushkara Expressions',
+    subject: 'Thank you for your inquiry - Kalyani Collections',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #330847;">Thank you for your inquiry!</h2>
@@ -93,10 +93,10 @@ export async function sendInquiryEmail(email: string, name: string, productName:
           <p>${message}</p>
         </div>
         <p>In the meantime, feel free to explore our other beautiful collections.</p>
-        <p>Best regards,<br>Pushkara Expressions Team</p>
+        <p>Best regards,<br>Kalyani Collections Team</p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
         <p style="color: #666; font-size: 12px;">
-          Pushkara Expressions - Your trusted boutique for authentic Indian wear
+          Kalyani Collections - Your trusted boutique for authentic Indian wear
         </p>
       </div>
     `,

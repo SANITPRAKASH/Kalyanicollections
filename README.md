@@ -1,6 +1,6 @@
-# Pushkara Expressions - Boutique Store Application
+# Kalyani Collections - Boutique Store Application
 
-A modern Next.js 14 boutique e-commerce application for "Pushkara Expressions" - an online catalog for authentic Indian wear without transactions/delivery. Focus on product showcase, user authentication, and appointment booking.
+A modern Next.js 14 boutique e-commerce application for "Kalyani Collections" - an online catalog for authentic Indian wear without transactions/delivery. Focus on product showcase, user authentication, and appointment booking.
 
 ## Features
 
@@ -67,7 +67,7 @@ cp .env.example .env
 Update the `.env` file with your database and email configuration:
 ```env
 DATABASE_URL="postgresql://username:password@localhost:5432/pkexpressions"
-JWT_SECRET="your-super-secret-jwt-key"
+JWT_SECRET="kalyani-house-secret-2025-super-secure"
 EMAIL_HOST="smtp.gmail.com"
 EMAIL_PORT=587
 EMAIL_USER="your-email@gmail.com"
@@ -179,8 +179,8 @@ This project is licensed under the MIT License.
 
 ## Support
 
-For support, email info@pushkaraexpressions.com or create an issue in the repository.
+For support, email info@kalyanicollections.com or create an issue in the repository.
 
 ---
 
-Built with ❤️ for Pushkara Expressions
+Built with ❤️ for Kalyani Collections

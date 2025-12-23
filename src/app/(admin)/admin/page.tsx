@@ -438,7 +438,7 @@ function SettingsTab() {
           <label className="block text-sm font-medium text-gray-700 mb-2">Store Name</label>
           <input
             type="text"
-            defaultValue="Pushkara Expressions"
+            defaultValue="Kalyani Collections"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           />
         </div>
@@ -454,7 +454,7 @@ function SettingsTab() {
           <label className="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
           <input
             type="email"
-            defaultValue="info@pushkaraexpressions.com"
+            defaultValue="info@kalyanicollections.com"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           />
         </div>

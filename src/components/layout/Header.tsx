@@ -60,10 +60,10 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-primary-300 to-accent-800 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">PE</span>
+              <span className="text-white font-bold text-sm">KC</span>
             </div>
             <span className="font-display text-xl font-bold text-accent-900">
-              Pushkara Expressions
+              Kalyani Collections
             </span>
           </Link>
 
@@ -153,17 +153,17 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             {/* Cart */}
             {isAuthenticated && (
-              <button
-                onClick={toggleCart}
-                className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-accent-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {getTotalItems()}
-                  </span>
-                )}
-              </button>
+              <Link
+  href="/dashboard?tab=cart"
+  className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors"
+>
+  <ShoppingCart className="w-5 h-5" />
+  {getTotalItems() > 0 && (
+    <span className="absolute -top-1 -right-1 bg-accent-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+      {getTotalItems()}
+    </span>
+  )}
+</Link>
             )}
 
             {/* User Menu */}

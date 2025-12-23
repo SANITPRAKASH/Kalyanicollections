@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const maxPrice = parseFloat(searchParams.get('maxPrice') || '50000')
     const sortBy = searchParams.get('sortBy') || 'newest'
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '12')
+    const limit = parseInt(searchParams.get('limit') || '50')
     const featured = searchParams.get('featured') === 'true'
 
     // Build where clause
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'kalyani-house-secret-2025-super-secure') as any
     
     // Check if user is admin
     const adminUser = await prisma.user.findUnique({

@@ -1,10 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-import { MapPin, Phone, Mail, Clock, Send, Calendar, User, MessageSquare } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { MapPin, Phone, Mail, Clock, Send, Calendar, User, MessageSquare, ShoppingBag } from 'lucide-react'
+import { useCartStore } from '@/stores/cart'
 import { cn } from '@/lib/utils'
 
 export default function ContactPage() {
+  const searchParams = useSearchParams()
+  const fromCart = searchParams?.get('cart') === 'true'
+  const { items: cartItems, getTotalPrice } = useCartStore()
+  
   const [activeTab, setActiveTab] = useState<'contact' | 'booking'>('contact')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -25,6 +31,41 @@ export default function ContactPage() {
     time: '',
     message: '',
   })
+
+  // Pre-fill contact form if coming from cart
+  useEffect(() => {
+    if (fromCart && cartItems && cartItems.length > 0) {
+      const cartMessage = generateCartMessage()
+      setContactForm(prev => ({
+        ...prev,
+        subject: 'Product Inquiry from Cart',
+        message: cartMessage
+      }))
+    }
+  }, [fromCart, cartItems])
+
+  const generateCartMessage = () => {
+    if (!cartItems || cartItems.length === 0) return ''
+    
+    let message = "Hi, I'm interested in the following items:\n\n"
+    
+    cartItems.forEach((item, index) => {
+      message += `${index + 1}. ${item.name}\n`
+      message += `   Quantity: ${item.quantity}\n`
+      message += `   Price: ₹${item.price.toLocaleString()} each\n`
+      message += `   Subtotal: ₹${(item.price * item.quantity).toLocaleString()}\n\n`
+    })
+    
+    message += `Total Amount: ₹${getTotalPrice().toLocaleString()}\n\n`
+    message += `Please let me know about:\n`
+    message += `- Availability of these items\n`
+    message += `- Size and color options\n`
+    message += `- Customization possibilities\n`
+    message += `- Delivery/pickup options\n\n`
+    message += `Looking forward to hearing from you!`
+    
+    return message
+  }
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,12 +121,26 @@ export default function ContactPage() {
       <section className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-accent-900 mb-4">
-              Get In Touch
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We'd love to hear from you. Send us a message or book an appointment to visit our store.
-            </p>
+            {fromCart ? (
+              <>
+                <ShoppingBag className="w-16 h-16 text-primary-600 mx-auto mb-4" />
+                <h1 className="text-4xl md:text-5xl font-bold text-accent-900 mb-4">
+                  Inquire About Your Selected Items
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  We've prepared your inquiry with the items from your cart. Fill in your details and we'll get back to you soon!
+                </p>
+              </>
+            ) : (
+              <>
+                <h1 className="text-4xl md:text-5xl font-bold text-accent-900 mb-4">
+                  Get In Touch
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  We'd love to hear from you. Send us a message or book an appointment to visit our store.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -100,8 +155,8 @@ export default function ContactPage() {
               </div>
               <h3 className="text-xl font-semibold text-accent-900 mb-2">Visit Us</h3>
               <p className="text-gray-600">
-                123 Fashion Street<br />
-                Mumbai, Maharashtra 400001<br />
+                #40, 1st Main Rd, Basaveshwar Nagar<br />
+                Bengaluru, Karnataka 560079<br />
                 India
               </p>
             </div>
@@ -112,8 +167,8 @@ export default function ContactPage() {
               </div>
               <h3 className="text-xl font-semibold text-accent-900 mb-2">Call Us</h3>
               <p className="text-gray-600">
-                +91 98765 43210<br />
-                +91 98765 43211<br />
+                +91 9964742910<br />
+                +91 9900443910<br />
                 WhatsApp Available
               </p>
             </div>
@@ -124,9 +179,9 @@ export default function ContactPage() {
               </div>
               <h3 className="text-xl font-semibold text-accent-900 mb-2">Email Us</h3>
               <p className="text-gray-600">
-                info@pushkaraexpressions.com<br />
-                support@pushkaraexpressions.com<br />
-                orders@pushkaraexpressions.com
+                info@kalyanicollections.com<br />
+                support@kalyanicollections.com<br />
+                orders@kalyanicollections.com
               </p>
             </div>
           </div>
@@ -164,7 +219,9 @@ export default function ContactPage() {
                 <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
                   <MessageSquare className="w-5 h-5 text-primary-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-accent-900">Send us a Message</h2>
+                <h2 className="text-2xl font-bold text-accent-900">
+                  {fromCart ? 'Product Inquiry' : 'Send us a Message'}
+                </h2>
               </div>
 
               {submitted && activeTab === 'contact' ? (
@@ -174,7 +231,7 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Message Sent!</h3>
                   <p className="text-gray-600">
-                    Thank you for your message. We'll get back to you within 24 hours.
+                    Thank you for your inquiry. We'll get back to you within 24 hours with details about your selected items.
                   </p>
                 </div>
               ) : (
@@ -247,12 +304,17 @@ export default function ContactPage() {
                     <textarea
                       id="contact-message"
                       required
-                      rows={5}
+                      rows={fromCart ? 12 : 5}
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                       className="input-field"
                       placeholder="Tell us how we can help you..."
                     />
+                    {fromCart && (
+                      <p className="text-xs text-gray-500 mt-2">
+                        Your cart items have been pre-filled. Feel free to edit or add any special requirements.
+                      </p>
+                    )}
                   </div>
 
                   <button
@@ -263,7 +325,7 @@ export default function ContactPage() {
                       isSubmitting && "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                    {isSubmitting ? 'Sending...' : fromCart ? 'Submit Inquiry' : 'Send Message'}
                   </button>
                 </form>
               )}
@@ -413,7 +475,7 @@ export default function ContactPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-accent-900 mb-4">Find Us</h2>
             <p className="text-xl text-gray-600">
-              Visit our store in the heart of Mumbai's fashion district
+              Visit our store in Basaveshwar Nagar, Bengaluru
             </p>
           </div>
 
@@ -423,7 +485,7 @@ export default function ContactPage() {
               <h3 className="text-xl font-semibold text-gray-600 mb-2">Interactive Map</h3>
               <p className="text-gray-500">
                 Map integration would be implemented here<br />
-                showing the exact location of Pushkara Expressions
+                showing the exact location of Kalyani Collections
               </p>
             </div>
           </div>

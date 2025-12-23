@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'kalyani-house-secret-2025-super-secure') as any
     
     // Check if user is admin
     const adminUser = await prisma.user.findUnique({

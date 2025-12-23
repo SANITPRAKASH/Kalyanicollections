@@ -15,6 +15,7 @@ export function middleware(request: NextRequest) {
     '/login',
     '/register',
     '/forgot-password',
+    '/dashboard',
     '/api/auth/login',
     '/api/auth/register',
     '/api/auth/verify-otp',

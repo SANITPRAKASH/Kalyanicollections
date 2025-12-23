@@ -60,7 +60,7 @@ const testimonials = [
   {
     name: 'Priya Sharma',
     location: 'Mumbai',
-    text: 'The sarees at Pushkara Expressions are absolutely stunning. The quality and craftsmanship are exceptional.',
+    text: 'The sarees at Kalyani Collections are absolutely stunning. The quality and craftsmanship are exceptional.',
     rating: 5
   },
   {
@@ -131,7 +131,7 @@ export default function HomePage() {
                     alt="Beautiful model in traditional Indian wear"
                     width={600}
                     height={600}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     priority
                   />
                 </div>
@@ -169,7 +169,7 @@ export default function HomePage() {
                     alt={category.name}
                     width={300}
                     height={300}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
                 <div className="p-6">
@@ -203,7 +203,7 @@ export default function HomePage() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-accent-900 mb-4">
-              Why Choose Pushkara Expressions?
+              Why Choose Kalyani Collections?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               We're committed to providing you with the finest Indian wear and exceptional service.

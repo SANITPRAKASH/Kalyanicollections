@@ -20,12 +20,12 @@ const dancing = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  title: "Pushkara Expressions - Authentic Indian Wear Boutique",
+  title: "Kalyani Collections - Authentic Indian Wear Boutique",
   description: "Discover our beautiful collection of sarees, lehengas, kurtas, and more. Your trusted boutique for authentic Indian wear for special occasions.",
   keywords: "Indian wear, sarees, lehengas, kurtas, boutique, fashion, traditional wear",
-  authors: [{ name: "Pushkara Expressions" }],
+  authors: [{ name: "Kalyani Collections" }],
   openGraph: {
-    title: "Pushkara Expressions - Authentic Indian Wear Boutique",
+    title: "Kalyani Collections - Authentic Indian Wear Boutique",
     description: "Discover our beautiful collection of sarees, lehengas, kurtas, and more.",
     type: "website",
     locale: "en_IN",

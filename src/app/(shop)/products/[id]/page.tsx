@@ -341,7 +341,7 @@ export default function ProductDetailPage() {
                   <span className="text-sm">Call Us</span>
                 </a>
                 <a
-                  href="mailto:info@pushkaraexpressions.com"
+                  href="mailto:info@kalyanicollections.com"
                   className="flex items-center justify-center space-x-2 p-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   <Mail className="w-4 h-4" />

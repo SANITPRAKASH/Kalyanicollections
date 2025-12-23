@@ -13,24 +13,34 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if user is authenticated
+    // Check if user is authenticated (optional)
     const userId = request.headers.get('x-user-id')
+
+    // Create booking data
+    const bookingData: any = {
+      name,
+      email,
+      phone,
+      date: new Date(date),
+      time,
+      message: message || null,
+      status: 'pending',
+    }
+
+    // Only add user relation if userId exists
+    if (userId) {
+      bookingData.user = {
+        connect: { id: userId }
+      }
+    } else {
+      bookingData.userId = null
+    }
 
     // Create booking
     const booking = await prisma.booking.create({
-      data: {
-        name,
-        email,
-        phone,
-        date: new Date(date),
-        time,
-        message: message || null,
-        status: 'pending',
-        userId: userId || null,
-      }
+      data: bookingData
     })
 
-    // In production, you would send an email confirmation here
     console.log('New booking created:', booking)
 
     return NextResponse.json({
@@ -58,7 +68,6 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Get user's bookings
     const bookings = await prisma.booking.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' }

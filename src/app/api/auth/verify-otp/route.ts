@@ -1,68 +1,89 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
-import { generateToken } from '@/lib/auth'
-import { sendWelcomeEmail } from '@/lib/email'
-
-// In production, store OTPs in Redis with expiration
-const otpStore = new Map<string, { otp: string; expires: number }>()
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { generateToken } from "@/lib/auth";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, otp } = await request.json()
+    const { email, otp } = await request.json();
 
     // Validation
     if (!email || !otp) {
       return NextResponse.json(
-        { message: 'Email and OTP are required' },
+        { message: "Email and OTP are required" },
         { status: 400 }
-      )
+      );
     }
 
     // Find user
     const user = await prisma.user.findUnique({
-      where: { email }
-    })
+      where: { email },
+    });
 
     if (!user) {
-      return NextResponse.json(
-        { message: 'User not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // Check OTP (in production, verify from Redis)
-    const storedOTP = otpStore.get(email)
-    if (!storedOTP || storedOTP.otp !== otp || Date.now() > storedOTP.expires) {
+    // Check OTP from database
+    const storedOTP = await prisma.oTP.findUnique({
+      where: { email },
+    });
+
+    if (!storedOTP) {
       return NextResponse.json(
-        { message: 'Invalid or expired OTP' },
+        { message: "Invalid or expired OTP" },
         { status: 400 }
-      )
+      );
     }
 
-    // Clear OTP
-    otpStore.delete(email)
+    // Check if OTP matches
+    if (storedOTP.otp !== otp) {
+      return NextResponse.json({ message: "Invalid OTP" }, { status: 400 });
+    }
+
+    // Check if OTP is expired
+    if (new Date() > storedOTP.expiresAt) {
+      // Delete expired OTP
+      await prisma.oTP.delete({
+        where: { email },
+      });
+
+      return NextResponse.json(
+        { message: "OTP has expired. Please request a new one." },
+        { status: 400 }
+      );
+    }
+
+    // OTP is valid - delete it from database
+    await prisma.oTP.delete({
+      where: { email },
+    });
 
     // Update user verification status
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
-      data: { verified: true }
-    })
+      data: { verified: true },
+    });
 
     // Generate JWT token
     const token = generateToken({
       userId: user.id,
       email: user.email,
-      role: user.role
-    })
+      role: user.role,
+    });
+    // ✅ ADD THIS
+    console.log("✅ Generated token:", token);
+    console.log("✅ Token length:", token.length);
 
     // Send welcome email for new registrations
     if (!user.verified) {
-      await sendWelcomeEmail(user.email, user.name)
+      await sendWelcomeEmail(user.email, user.name);
     }
 
     // Set cookie
     const response = NextResponse.json({
-      message: 'Login successful',
+      message: "Login successful",
+      token,
       user: {
         id: updatedUser.id,
         name: updatedUser.name,
@@ -70,24 +91,24 @@ export async function POST(request: NextRequest) {
         phone: updatedUser.phone,
         avatar: updatedUser.avatar,
         role: updatedUser.role,
-        verified: updatedUser.verified
-      }
-    })
+        verified: updatedUser.verified,
+      },
+    });
 
-    response.cookies.set('auth-token', token, {
+    response.cookies.set("auth-token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 // 7 days
-    })
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+    });
 
-    return response
-
+    return response;
   } catch (error) {
-    console.error('OTP verification error:', error)
+    console.error("OTP verification error:", error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { message: "Internal server error" },
       { status: 500 }
-    )
+    );
   }
 }

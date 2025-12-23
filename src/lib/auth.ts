@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from './db'
 import { User } from '@prisma/client'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key'
+const JWT_SECRET = process.env.JWT_SECRET || 'kalyani-house-secret-2025-super-secure'
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
 
 export interface JWTPayload {

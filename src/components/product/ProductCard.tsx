@@ -46,25 +46,27 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
   const sizes = JSON.parse(product.sizes || '[]')
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    if (!isAuthenticated) {
-      // Redirect to login
-      window.location.href = '/login'
-      return
-    }
-
-    addItem({
-      productId: product.id,
-      name: product.name,
-      price: product.price,
-      image: images[0] || '/images/placeholder.jpg',
-      quantity: 1,
-      colors: colors,
-      sizes: sizes,
-    })
+  e.preventDefault()
+  e.stopPropagation()
+  
+  if (!isAuthenticated) {
+    window.location.href = '/login'
+    return
   }
+
+  addItem({
+    productId: product.id,
+    name: product.name,
+    price: product.price,
+    image: images[0] || '/images/placeholder.jpg',
+    quantity: 1,
+    colors: colors,
+    sizes: sizes,
+  })
+  
+  // ✅ Add this: Show success message
+  alert(`${product.name} added to cart!`)
+}
 
   const handleImageHover = (index: number) => {
     setCurrentImageIndex(index)

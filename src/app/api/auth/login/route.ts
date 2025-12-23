@@ -38,6 +38,25 @@ export async function POST(request: NextRequest) {
 
     // Generate OTP for 2FA
     const otp = generateOTP()
+    
+    // Store OTP in database with 10-minute expiration
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes from now
+
+    // Delete any existing OTP for this email first
+    await prisma.oTP.deleteMany({
+      where: { email }
+    })
+
+    // Create new OTP entry
+    await prisma.oTP.create({
+      data: {
+        email,
+        otp,
+        expiresAt,
+      }
+    })
+
+    // Send OTP email
     await sendOTPEmail(email, otp, user.name)
 
     return NextResponse.json({

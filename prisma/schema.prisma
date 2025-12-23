@@ -6,10 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
 enum Role {
   USER
   ADMIN
@@ -174,4 +173,12 @@ model SiteSettings {
   updatedAt   DateTime @updatedAt
 
   @@map("site_settings")
+}
+model OTP {
+  email     String   @id
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("otps")
 }

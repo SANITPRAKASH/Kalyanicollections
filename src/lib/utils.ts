@@ -46,7 +46,7 @@ export function getImageUrl(imagePath: string): string {
   if (imagePath.startsWith('http')) {
     return imagePath
   }
-  return `/uploads/${imagePath}`
+  return `/public/images/products/${imagePath}`
 }
 
 export function formatDate(date: Date): string {

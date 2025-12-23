@@ -13,7 +13,6 @@ interface User {
 
 interface AuthState {
   user: User | null
-  token: string | null
   isAuthenticated: boolean
   isLoading: boolean
   otpSent: boolean
@@ -22,10 +21,9 @@ interface AuthState {
 
 interface AuthActions {
   setUser: (user: User | null) => void
-  setToken: (token: string | null) => void
   setLoading: (loading: boolean) => void
   setOTPSent: (sent: boolean, email?: string) => void
-  login: (user: User, token: string) => void
+  login: (user: User) => void  // Changed: removed token parameter
   logout: () => void
   updateUser: (updates: Partial<User>) => void
 }
@@ -35,7 +33,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
     (set, get) => ({
       // State
       user: null,
-      token: null,
       isAuthenticated: false,
       isLoading: false,
       otpSent: false,
@@ -43,27 +40,36 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
       // Actions
       setUser: (user) => set({ user, isAuthenticated: !!user }),
-      setToken: (token) => set({ token }),
       setLoading: (isLoading) => set({ isLoading }),
       setOTPSent: (otpSent, email) => set({ otpSent, otpEmail: email || null }),
       
-      login: (user, token) => set({
+      login: (user) => set({  // Changed: only needs user now
         user,
-        token,
         isAuthenticated: true,
         isLoading: false,
         otpSent: false,
         otpEmail: null,
       }),
       
-      logout: () => set({
-        user: null,
-        token: null,
-        isAuthenticated: false,
-        isLoading: false,
-        otpSent: false,
-        otpEmail: null,
-      }),
+      logout: async () => {
+        // Call logout API to clear cookie
+        try {
+          await fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include',
+          })
+        } catch (error) {
+          console.error('Logout error:', error)
+        }
+        
+        set({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
+          otpSent: false,
+          otpEmail: null,
+        })
+      },
       
       updateUser: (updates) => {
         const currentUser = get().user
@@ -76,7 +82,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
     }

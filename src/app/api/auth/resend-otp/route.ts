@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
-import { generateOTP } from '@/lib/auth'
-import { sendOTPEmail } from '@/lib/email'
-
-// In production, store OTPs in Redis with expiration
-const otpStore = new Map<string, { otp: string; expires: number }>()
+import { generateToken } from '@/lib/auth'
+import { sendWelcomeEmail } from '@/lib/email'
+import { cookies } from 'next/headers'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json()
+    const { email, otp } = await request.json()
 
-    // Validation
-    if (!email) {
+    if (!email || !otp) {
       return NextResponse.json(
-        { message: 'Email is required' },
+        { message: 'Email and OTP are required' },
         { status: 400 }
       )
     }
 
-    // Find user
     const user = await prisma.user.findUnique({
       where: { email }
     })
@@ -30,24 +26,84 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate new OTP
-    const otp = generateOTP()
-    
-    // Store OTP with 10-minute expiration
-    otpStore.set(email, {
-      otp,
-      expires: Date.now() + 10 * 60 * 1000 // 10 minutes
+    const storedOTP = await prisma.oTP.findUnique({
+      where: { email }
     })
 
-    // Send OTP email
-    await sendOTPEmail(email, otp, user.name)
+    if (!storedOTP) {
+      return NextResponse.json(
+        { message: 'Invalid or expired OTP' },
+        { status: 400 }
+      )
+    }
 
-    return NextResponse.json({
-      message: 'OTP resent successfully'
+    if (storedOTP.otp !== otp) {
+      return NextResponse.json(
+        { message: 'Invalid OTP' },
+        { status: 400 }
+      )
+    }
+
+    if (new Date() > storedOTP.expiresAt) {
+      await prisma.oTP.delete({
+        where: { email }
+      })
+      
+      return NextResponse.json(
+        { message: 'OTP has expired. Please request a new one.' },
+        { status: 400 }
+      )
+    }
+
+    await prisma.oTP.delete({
+      where: { email }
     })
+
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { verified: true }
+    })
+
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role
+    })
+
+    if (!user.verified) {
+      await sendWelcomeEmail(user.email, user.name)
+    }
+
+    // ✅ Use Next.js 15 cookies() API - more reliable
+    const cookieStore = await cookies()
+    cookieStore.set({
+      name: 'auth-token',
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 // 7 days
+    })
+
+    const response = NextResponse.json({
+      message: 'Login successful',
+      token, // ✅ Also send token in response for localStorage backup
+      user: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        avatar: updatedUser.avatar,
+        role: updatedUser.role,
+        verified: updatedUser.verified
+      }
+    })
+
+    return response
 
   } catch (error) {
-    console.error('Resend OTP error:', error)
+    console.error('OTP verification error:', error)
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }
