@@ -2,13 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   eslint: {
-    // Disable ESLint during builds
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Disable TypeScript errors during builds
     ignoreBuildErrors: true,
   },
-};
+  // Skip static page generation to avoid useSearchParams errors
+  experimental: {
+    ppr: false,
+  },
+}
 
 export default nextConfig;
