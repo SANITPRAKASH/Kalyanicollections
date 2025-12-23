@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { MapPin, Phone, Mail, Clock, Send, Calendar, User, MessageSquare, ShoppingBag } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Send, Calendar, MessageSquare, ShoppingBag } from 'lucide-react'
 import { useCartStore } from '@/stores/cart'
 import { cn } from '@/lib/utils'
 
-export default function ContactPage() {
+function ContactPageContent() {
   const searchParams = useSearchParams()
   const fromCart = searchParams?.get('cart') === 'true'
   const { items: cartItems, getTotalPrice } = useCartStore()
@@ -32,18 +32,6 @@ export default function ContactPage() {
     message: '',
   })
 
-  // Pre-fill contact form if coming from cart
-  useEffect(() => {
-    if (fromCart && cartItems && cartItems.length > 0) {
-      const cartMessage = generateCartMessage()
-      setContactForm(prev => ({
-        ...prev,
-        subject: 'Product Inquiry from Cart',
-        message: cartMessage
-      }))
-    }
-  }, [fromCart, cartItems])
-
   const generateCartMessage = () => {
     if (!cartItems || cartItems.length === 0) return ''
     
@@ -66,6 +54,18 @@ export default function ContactPage() {
     
     return message
   }
+
+  // Pre-fill contact form if coming from cart
+  useEffect(() => {
+    if (fromCart && cartItems && cartItems.length > 0) {
+      const cartMessage = generateCartMessage()
+      setContactForm(prev => ({
+        ...prev,
+        subject: 'Product Inquiry from Cart',
+        message: cartMessage
+      }))
+    }
+  }, [fromCart, cartItems])
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -128,7 +128,7 @@ export default function ContactPage() {
                   Inquire About Your Selected Items
                 </h1>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  We've prepared your inquiry with the items from your cart. Fill in your details and we'll get back to you soon!
+                  We&apos;ve prepared your inquiry with the items from your cart. Fill in your details and we&apos;ll get back to you soon!
                 </p>
               </>
             ) : (
@@ -137,7 +137,7 @@ export default function ContactPage() {
                   Get In Touch
                 </h1>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  We'd love to hear from you. Send us a message or book an appointment to visit our store.
+                  We&apos;d love to hear from you. Send us a message or book an appointment to visit our store.
                 </p>
               </>
             )}
@@ -231,7 +231,7 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Message Sent!</h3>
                   <p className="text-gray-600">
-                    Thank you for your inquiry. We'll get back to you within 24 hours with details about your selected items.
+                    Thank you for your inquiry. We&apos;ll get back to you within 24 hours with details about your selected items.
                   </p>
                 </div>
               ) : (
@@ -292,7 +292,7 @@ export default function ContactPage() {
                         value={contactForm.subject}
                         onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
                         className="input-field"
-                        placeholder="What's this about?"
+                        placeholder="What&apos;s this about?"
                       />
                     </div>
                   </div>
@@ -347,7 +347,7 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Appointment Booked!</h3>
                   <p className="text-gray-600">
-                    Thank you for booking an appointment. We'll confirm your slot and send you the details.
+                    Thank you for booking an appointment. We&apos;ll confirm your slot and send you the details.
                   </p>
                 </div>
               ) : (
@@ -492,5 +492,20 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
+  )
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ContactPageContent />
+    </Suspense>
   )
 }
