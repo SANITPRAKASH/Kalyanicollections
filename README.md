@@ -183,4 +183,4 @@ For support, email info@kalyanicollections.com or create an issue in the reposit
 
 ---
 
-Built with ❤️ for Pushkara Expressions
+Built with ❤️ for Kalyani Expressions
