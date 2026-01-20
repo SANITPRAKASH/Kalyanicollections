@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   MapPin,
   Clock,
@@ -226,7 +227,7 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Contact</h3>
               <p className="opacity-90">
-                Phone: +91 98765 43210
+                Phone: +91 99647 42910
                 <br />
                 Email: info@kalyanicollections.com
                 <br />
@@ -248,18 +249,18 @@ export default function AboutPage() {
             help you find the perfect piece for your special occasion.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
+            <Link
               href="/products"
               className="btn-primary inline-flex items-center justify-center"
             >
               Shop Now
-            </a>
-            <a
+            </Link>
+            <Link
               href="/contact"
               className="btn-outline inline-flex items-center justify-center"
             >
               Book Appointment
-            </a>
+            </Link>
           </div>
         </div>
       </section>
